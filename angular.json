@@ -29,7 +29,13 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "node_modules/chart.js/dist/Chart.min.js",
+              "node_modules/shards-ui/dist/js/shards.min.js",
+              "src/assets/js/shards-dashboards.1.0.0.js"
+            ]
           },
           "configurations": {
             "production": {

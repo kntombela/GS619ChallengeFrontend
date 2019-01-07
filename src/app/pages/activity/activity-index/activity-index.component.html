@@ -1,0 +1,33 @@
+<!-- Page Header -->
+<div class="page-header row no-gutters py-4">
+  <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+    <span class="text-uppercase page-subtitle">{{ pageTitle }}</span>
+    <h3 class="page-title">Activity</h3>
+  </div>
+</div>
+
+<div class="row">
+  <div *ngFor="let activity of activityLog" (click)="setSelectedRow(activity.id)" class="col-lg-3 col-md-6 col-sm-12 mb-4">
+    <div class="card card-small card-post card-post--1">
+      <div class="card-post__image" style="background-image: url('/assets/img/img_run.jpg');">
+        <a href="#" data-toggle="modal" data-target="#deleteModal" class="card-post__category fas fa-times-circle" style="color: red; font-size:25px;"></a>
+        <div class="card-post__author d-flex">
+            <a href="#" class="badge badge-pill badge-primary">Technology</a>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="d-inline-block">
+          <h6 class="text-fiord-blue mb-1">Duration</h6>
+          <p class="text-fiord-blue mb-3">{{ activity.duration }}</p>
+        </div>
+        <div class="d-inline-block ml-5">
+          <h6 class="text-fiord-blue mb-1">Distance</h6>
+          <p class="text-fiord-blue mb-3">{{ activity.distance }}</p>
+        </div>
+        <p class="card-text mb-3">{{ activity.message }}</p>
+        <span class="text-muted">{{ activity.date | date:'fullDate'}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+

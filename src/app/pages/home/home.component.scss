@@ -1,0 +1,18 @@
+$color_1: #868e96;
+$color_2: black;
+$color_3: inherit;
+
+.delete-link {
+	color: $color_1;
+	&:hover {
+		cursor: pointer;
+		color: $color_2;
+	}
+}
+.edit-link {
+	color: $color_3;
+	&:hover {
+		text-decoration: underline;
+		cursor: pointer;
+	}
+}
