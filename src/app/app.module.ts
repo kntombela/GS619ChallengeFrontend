@@ -14,6 +14,8 @@ import { HeaderComponent } from './components/header/header.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { MessagesComponent } from './components/messages/messages.component';
 import { EnumPipe } from './shared/pipes/enum.pipe';
+import { CallbackComponent } from './pages/callback/callback.component';
+import { LoginComponent } from './pages/login/login.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { EnumPipe } from './shared/pipes/enum.pipe';
     HeaderComponent,
     SidenavComponent,
     MessagesComponent,
-    EnumPipe
+    EnumPipe,
+    CallbackComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
