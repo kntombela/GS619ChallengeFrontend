@@ -6,16 +6,8 @@ import { AuthService } from 'src/app/auth/auth.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
-
-  profile: any;
+export class HeaderComponent {
 
   constructor(public auth: AuthService) { }
-
-  ngOnInit() {
-    if(!this.auth.userProfile){
-      this.auth.renewTokens();
-    }
-  }
 
 }

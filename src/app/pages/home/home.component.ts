@@ -1,3 +1,5 @@
+import { AuthService } from 'src/app/auth/auth.service';
+import { UtilsService } from './../../core/utils.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivityService } from '../activity/activity.service';
 import { Activity } from '../activity/activity';
@@ -13,24 +15,26 @@ declare var $: any;
 })
 export class HomeComponent implements OnInit {
 
-  pageTitle = 'My Activity Log';
+  pageTitle = 'My Dashboard';
   loading: boolean;
   activityLog: Activity[];
   activityType = ActivityEnum;
   selectedId: number;
   activityCount: number;
   totalDistance: number;
-  totalDuration: number;
+  totalDuration = new Date();
   fastestTime: string;
-  hours: number;
-  minutes: number;
-  seconds: number;
 
-  constructor(private title: Title, private activityService: ActivityService) { }
+  constructor(
+    private title: Title,
+    private activityService: ActivityService,
+    public utils: UtilsService,
+    private auth: AuthService
+  ) { }
 
   ngOnInit() {
     this.title.setTitle(this.pageTitle);
-    this._getActivityLog('google-oauth2|110766548876344057441'); //TODO: Update to get current logged in user
+    this._getActivityLog(); //TODO: Update to get current logged in user
   }
 
   delete() {
@@ -52,32 +56,41 @@ export class HomeComponent implements OnInit {
   }
 
   refresh() {
-    this._getActivityLog('google-oauth2|110766548876344057441'); //TODO: Update to get current logged in user
+    this._getActivityLog();
   }
 
-  private _getActivityLog(userId) {
+  getDuration(hours, minutes, seconds) {
+    return ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2);
+  }
+
+  private _getActivityLog() {
     this.loading = true;
-    this.activityService
-      .get(userId)
-      .subscribe(data => {
-        this.activityLog = data;
-        this.activityCount = data.length;
-        this.totalDistance = this._getTotalDistance(data);
-        this.totalDuration = this._getTotalDuration(data);
-        this._calculateDuration(this._getFastestTime(data));
-        this.loading = false;
-      });
+    if (this.auth.userProfile) {
+      this.activityService
+        .get(this.auth.userProfile.sub)
+        .subscribe(data => {
+          this.activityLog = data;
+          this.activityCount = data.length;
+          this.totalDistance = this._getTotalDistance(data);
+          // this.totalDuration = this._getTotalDuration(data);
+          // this._calculateDuration(data);
+          this.loading = false;
+        });
+    } else {
+      this.auth.handleAuth();
+      this.loading = false;
+    }
   }
 
   private _getTotalDistance(data) {
-    var total = data.reduce(function (prev, cur) {
+    var total = data.reduce(function(prev, cur) {
       return prev + cur.distance;
     }, 0);
     return total;
   }
 
   private _getTotalDuration(data) {
-    var total = data.reduce(function (prev, cur) {
+    var total = data.reduce(function(prev, cur) {
       return prev + cur.duration;
     }, 0);
     return total;
@@ -87,10 +100,12 @@ export class HomeComponent implements OnInit {
     return data.reduce((min, b) => Math.min(min, b.duration), data[0].duration);
   }
 
-  private _calculateDuration(time) {
-    this.hours = Math.floor(time);
-    this.minutes = (time % 1) * 60;
-    this.seconds = (this.minutes % 1) * 60;
-    this.fastestTime = this.hours + ':' + this.minutes + ':' + this.seconds;
+  private _calculateDuration(data) {
+
+    data.forEach(element => {
+      var d = new Date();
+      d.setHours(element.hours, element.minutes, element.seconds);
+      console.log(d.getTime());
+    });
   }
 }

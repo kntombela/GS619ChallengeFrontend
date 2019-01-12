@@ -1,3 +1,4 @@
+import { MessagesService } from './../../components/messages/messages.service';
 import { Injectable } from '@angular/core';
 import { ENV } from 'src/app/core/env.config';
 import { HttpClient } from '@angular/common/http';
@@ -13,7 +14,10 @@ export class ActivityService {
   private baseUrl: string = `${ENV.BASE_API}`;
   private accessPointUrl: string = this.baseUrl + '/activities';
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private messagesService: MessagesService
+  ) { }
 
   /** GET: Get User Activities*/
   get(userId: string): Observable<Activity[]> {
@@ -44,7 +48,7 @@ export class ActivityService {
   /** POST: */
   add(activity: Activity): Observable<Activity> {
     return this.http.post<Activity>(this.accessPointUrl, activity).pipe(
-      tap((activity: Activity) => this.log(`added activity w/ id=${activity.id}`, true)),
+      tap((activity: Activity) => this.log('New activity added!', true)),
       catchError(this.handleError<Activity>('addActivity'))
     );
   }
@@ -52,13 +56,13 @@ export class ActivityService {
   /** POST: */
   delete(id: number): Observable<any> {
     return this.http.delete<number>(this.accessPointUrl + '/' + id).pipe(
-      tap(_ => this.log(`deleted activity w/ id=${id}`, true)),
+      tap(_ => this.log('Activity deleted!', true)),
       catchError(this.handleError<Activity>('deleteActivity'))
     );
   }
 
   private log(message: string, isSuccess: boolean) {
-    // this.messageService.add(`ActivityService: ${message}`, isSuccess);
+    this.messagesService.add(`${message}`, isSuccess);
   }
 
   /**

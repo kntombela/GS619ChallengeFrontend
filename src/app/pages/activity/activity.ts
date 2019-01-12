@@ -5,9 +5,10 @@ export class Activity {
         public type: ActivityEnum = ActivityEnum.Run,
         public date: Date = new Date(),
         public distance: number = 0,
-        public duration: number = 0,
+        public hours: number = 0,
+        public minutes: number = 0,
+        public seconds: number = 0,
         public message: string = '',
-        public imageUrl: string = '',
         public id?: number 
     ) { }
 }

@@ -1,3 +1,5 @@
+import { AuthService } from 'src/app/auth/auth.service';
+import { UtilsService } from './../../../core/utils.service';
 import { ActivityEnum } from './../activity.enum';
 import { ActivityService } from './../activity.service';
 import { Component, OnInit } from '@angular/core';
@@ -19,21 +21,31 @@ export class ActivityIndexComponent implements OnInit {
   activityType = ActivityEnum;
   selectedId: number;
 
-  constructor(private title: Title, private activityService: ActivityService) { }
+  constructor(
+    private title: Title,
+    private activityService: ActivityService,
+    public utils: UtilsService,
+    private auth: AuthService
+  ) { }
 
   ngOnInit() {
     this.title.setTitle(this.pageTitle);
-    this._getActivityLog('google-oauth2|110766548876344057441'); //TODO: Update to get current logged in user
+    this._getActivityLog();
   }
 
-  private _getActivityLog(userId) {
+  private _getActivityLog() {
     this.loading = true;
-    this.activityService
-      .get(userId)
-      .subscribe(data => {
-        this.activityLog = data;
-        this.loading = false;
-      });
+    if (this.auth.userProfile) {
+      this.activityService
+        .get(this.auth.userProfile.sub)
+        .subscribe(data => {
+          this.activityLog = data;
+          this.loading = false;
+        });
+    } else {
+      this.auth.handleAuth();
+      this.loading = false;
+    }
   }
 
   delete() {
@@ -55,6 +67,10 @@ export class ActivityIndexComponent implements OnInit {
   }
 
   refresh() {
-    this._getActivityLog('google-oauth2|110766548876344057441'); //TODO: Update to get current logged in user
+    this._getActivityLog();
+  }
+
+  getDuration(hours, minutes, seconds) {
+    return ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2);
   }
 }

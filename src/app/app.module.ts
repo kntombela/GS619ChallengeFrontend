@@ -1,3 +1,4 @@
+import { AuthService } from 'src/app/auth/auth.service';
 import { ActivityService } from './pages/activity/activity.service';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -16,6 +17,10 @@ import { MessagesComponent } from './components/messages/messages.component';
 import { EnumPipe } from './shared/pipes/enum.pipe';
 import { CallbackComponent } from './pages/callback/callback.component';
 import { LoginComponent } from './pages/login/login.component';
+import { AuthGuard } from './guard/auth.guard';
+import { LoadingComponent } from './core/loading.component';
+import { UtilsService } from './core/utils.service';
+import { UnauthorisedComponent } from './pages/unauthorised/unauthorised.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +34,9 @@ import { LoginComponent } from './pages/login/login.component';
     MessagesComponent,
     EnumPipe,
     CallbackComponent,
-    LoginComponent
+    LoginComponent,
+    LoadingComponent,
+    UnauthorisedComponent
   ],
   imports: [
     BrowserModule,
@@ -39,6 +46,9 @@ import { LoginComponent } from './pages/login/login.component';
   ],
   providers: [
     ActivityService,
+    UtilsService,
+    AuthService,
+    AuthGuard,
     Title
   ],
   bootstrap: [AppComponent]

@@ -1,3 +1,4 @@
+import { AuthService } from './../../../auth/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { Activity } from '../activity';
 import { ActivityEnum } from '../activity.enum';
@@ -15,14 +16,12 @@ export class ActivityNewComponent implements OnInit {
   pageTitle = 'New';
   activity = new Activity();
   activityType = ActivityEnum;
-  hours: number;
-  minutes: number;
-  seconds: number;
 
   constructor(
     private title: Title,
     private activityService: ActivityService,
-    private location: Location
+    private location: Location,
+    private auth: AuthService
   ) { }
 
   ngOnInit() {
@@ -30,15 +29,12 @@ export class ActivityNewComponent implements OnInit {
   }
 
   add(activity: Activity) {
-    activity.duration = this._calculateTime();
-    activity.userId = 'google-oauth2|110766548876344057441'; //TODO: Update to get current logged in user
-    this.activityService
-      .add(activity)
-      .subscribe(() => this.goBack());
-  }
-
-  private _calculateTime() {
-    return +((this.hours + (this.minutes / 60) + (this.seconds / 3600)).toFixed(2)); 
+    if (this.auth.userProfile) {
+      activity.userId = this.auth.userProfile.sub;
+      this.activityService
+        .add(activity)
+        .subscribe(() => this.goBack());
+    }
   }
 
   goBack() {

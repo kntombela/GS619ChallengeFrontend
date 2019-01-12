@@ -1,3 +1,4 @@
+import { UnauthorisedComponent } from './pages/unauthorised/unauthorised.component';
 import { CallbackComponent } from './pages/callback/callback.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -10,13 +11,14 @@ import { AuthGuard } from './guard/auth.guard';
 
 const routes: Routes = [
   // { path: '', component: HomeComponent, pathMatch: 'full' },
-  { path: '', redirectTo: 'home', pathMatch: 'prefix' },
+  { path: '', redirectTo: 'home', pathMatch: 'prefix', canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'callback', component: CallbackComponent, canActivate: [AuthGuard] },
+  { path: 'callback', component: CallbackComponent },
   { path: 'activity', component: ActivityIndexComponent, canActivate: [AuthGuard] },
   { path: 'activity/new', component: ActivityNewComponent, canActivate: [AuthGuard] },
-  { path: 'activity/edit/:id', component: ActivityEditComponent, canActivate: [AuthGuard] }
+  { path: 'activity/edit/:id', component: ActivityEditComponent, canActivate: [AuthGuard] },
+  { path: 'unauthorised', component: UnauthorisedComponent }
 ];
 
 @NgModule({

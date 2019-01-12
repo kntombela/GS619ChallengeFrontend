@@ -7,15 +7,10 @@ import { AuthService } from './auth/auth.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'app';
+  title = 'Good Stories 619 Challenge';
 
-  constructor(public auth: AuthService) {
-    auth.handleAuthentication();
+  constructor() {
+    
   }
 
-  ngOnInit() {
-    if (localStorage.getItem('isLoggedIn') === 'true') {
-      this.auth.renewTokens();
-    }
-  }
 }

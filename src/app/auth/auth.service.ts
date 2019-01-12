@@ -3,18 +3,23 @@ import * as auth0 from 'auth0-js';
 import { Router } from '@angular/router';
 import { AUTH_CONFIG } from './auth.config';
 import { ENV } from '../core/env.config';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private _idToken: string;
-  private _accessToken: string;
-  private _expiresAt: number;
+  accessToken: string;
   userProfile: any;
+  userMetaData: any;
+  expiresAt: number;
+  // Create a stream of logged in status to communicate throughout app
+  loggedIn: boolean;
+  loggedIn$ = new BehaviorSubject<boolean>(this.loggedIn);
+  loggingIn: boolean;
 
-  auth0 = new auth0.WebAuth({
+  private _auth0 = new auth0.WebAuth({
     clientID: AUTH_CONFIG.CLIENT_ID,
     domain: AUTH_CONFIG.CLIENT_DOMAIN,
     responseType: AUTH_CONFIG.RESPONSE_TYPE,
@@ -22,103 +27,95 @@ export class AuthService {
     scope: AUTH_CONFIG.SCOPE
   });
 
-  constructor(public router: Router) {
-    this._accessToken = '';
-    this._expiresAt = 0;
+  constructor(private router: Router) {
+    // If app auth token is not expired, request new token
+    if (JSON.parse(localStorage.getItem('expires_at')) > Date.now()) {
+      this.renewToken();
+    }
   }
 
-  get accessToken(): string {
-    return this._accessToken;
+  setLoggedIn(value: boolean) {
+    // Update login status subject
+    this.loggedIn$.next(value);
+    this.loggedIn = value;
   }
 
-  get idToken(): string {
-    return this._idToken;
+  login() {
+    // Auth0 authorize request
+    this._auth0.authorize();
   }
 
-  public login(): void {
-    this.auth0.authorize();
-  }
-
-  public handleAuthentication(): void {
-    this.auth0.parseHash((err, authResult) => {
-      if (authResult && authResult.accessToken && authResult.idToken) {
+  handleAuth() {
+    // When Auth0 hash parsed, get profile
+    this._auth0.parseHash((err, authResult) => {
+      if (authResult && authResult.accessToken) {
         window.location.hash = '';
-        this.localLogin(authResult);
+        this._getProfile(authResult);
         this.router.navigate(['/home']);
       } else if (err) {
-        this.router.navigate(['/login']);
-        console.log(err);
+        this.router.navigate(['/unauthorised']);
+        console.error(`Error authenticating: ${err.error}`);
       }
     });
-  }
-
-  private localLogin(authResult): void {
-    // Set isLoggedIn flag in localStorage
-    localStorage.setItem('isLoggedIn', 'true');
-    // Set the time that the access token will expire at
-    const expiresAt = (authResult.expiresIn * 1000) + new Date().getTime();
-    this._accessToken = authResult.accessToken;
-    this._idToken = authResult.idToken;
-    this._expiresAt = expiresAt;
-    // Get user's profile
-    this._getProfile(authResult);
-  }
-
-  public renewTokens(): void {
-    this.auth0.checkSession({}, (err, authResult) => {
-      if (authResult && authResult.accessToken && authResult.idToken) {
-        this.localLogin(authResult);
-      } else if (err) {
-        alert(`Could not get a new token (${err.error}: ${err.error_description}).`);
-        this.logout();
-      }
-    });
-  }
-
-  public logout(): void {
-    // Remove tokens and expiry time
-    this._accessToken = '';
-    this._idToken = '';
-    this._expiresAt = 0;
-    // Remove isLoggedIn flag from localStorage
-    localStorage.removeItem('isLoggedIn');
-    // Logout from Auth0
-    this.auth0.logout({
-      clientId: AUTH_CONFIG.CLIENT_ID,
-      returnTo: ENV.BASE_URI
-    });
-    // Go back to the home route
-    this.router.navigate(['/login']);
-  }
-
-  public isAuthenticated(): boolean {
-    // Check whether the current time is past the
-    // access token's expiry time
-    return new Date().getTime() < this._expiresAt;
   }
 
   private _getProfile(authResult) {
+    this.loggingIn = true;
     // Use access token to retrieve user's profile and set session
-    this.auth0.client.userInfo(authResult.accessToken, (err, profile) => {
+    this._auth0.client.userInfo(authResult.accessToken, (err, profile) => {
       if (profile) {
-        this.userProfile = profile;
+        this._setSession(authResult, profile);
       } else if (err) {
         console.warn(`Error retrieving profile: ${err.error}`);
       }
     });
   }
 
-  // public getProfile(cb): void {
-  //   if (!this._accessToken) {
-  //     throw new Error('Access Token must exist to fetch profile');
-  //   }
-  
-  //   const self = this;
-  //   this.auth0.client.userInfo(this._accessToken, (err, profile) => {
-  //     if (profile) {
-  //       self.userProfile = profile;
-  //     }
-  //     cb(err, profile);
-  //   });
-  // }
+  private _setSession(authResult, profile?) {
+    this.expiresAt = (authResult.expiresIn * 1000) + Date.now();
+    // Store expiration in local storage to access in constructor
+    localStorage.setItem('expires_at', JSON.stringify(this.expiresAt));
+    console.log(JSON.stringify(authResult.accessToken));
+    this.accessToken = authResult.accessToken;
+    // If initial login, set profile and admin information
+    if (profile) {
+      this.userProfile = profile;
+    }
+    // Update login status in loggedIn$ stream
+    this.setLoggedIn(true);
+    this.loggingIn = false;
+  }
+
+  private _clearExpiration() {
+    // Remove token expiration from localStorage
+    localStorage.removeItem('expires_at');
+  }
+
+  logout() {
+    // Remove data from localStorage
+    this._clearExpiration();
+    // End Auth0 authentication session
+    this._auth0.logout({
+      clientId: AUTH_CONFIG.CLIENT_ID,
+      returnTo: ENV.BASE_URI
+    });
+    // Redirect to login page
+    this.router.navigate(['/login']);
+  }
+
+  get tokenValid(): boolean {
+    // Check if current time is past access token's expiration
+    return Date.now() < JSON.parse(localStorage.getItem('expires_at'));
+  }
+
+  renewToken() {
+    // Check for valid Auth0 session
+    this._auth0.checkSession({}, (err, authResult) => {
+      if (authResult && authResult.accessToken) {
+        this._getProfile(authResult);
+      } else {
+        this._clearExpiration();
+      }
+    });
+  }
 }
