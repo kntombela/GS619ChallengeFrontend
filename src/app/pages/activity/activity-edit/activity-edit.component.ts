@@ -26,7 +26,7 @@ export class ActivityEditComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.title.setTitle(this.pageTitle);
+    this.title.setTitle('GS619 Challenge X - ' + this.pageTitle);
     this._getActivity();
   }
 

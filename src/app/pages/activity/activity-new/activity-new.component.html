@@ -15,7 +15,7 @@
         <li class="list-group-item p-3">
           <div class="row">
             <div class="col">
-              <form #leadForm="ngForm">
+              <form #activityForm="ngForm">
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="cbType">Type</label>
@@ -33,14 +33,26 @@
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="lbDistance">Distance (km/s)</label>
-                    <input [(ngModel)]="activity.distance" class="form-control" id="lbDistance" name="distance" />
+                    <input [(ngModel)]="activity.distance" class="form-control" id="lbDistance" name="distance" #distance="ngModel" required/>
+                    <div class="alert alert-danger" [hidden]="distance.valid || distance.pristine">
+                      Required Field
+                    </div>
                   </div>
                   <div class="form-group col-md-6">
                     <label for="lbDuration">Duration (hh:mm:ss)</label>
                     <div id="lbDuration" class="input-group">
-                      <input [(ngModel)]="activity.hours" class="form-control" name="hours" placeholder="hr" type="number">
-                      <input [(ngModel)]="activity.minutes" class="form-control" name="minutes" placeholder="min" type="number">
-                      <input [(ngModel)]="activity.seconds" class="form-control" name="seconds" placeholder="sec" type="number">
+                      <input [(ngModel)]="activity.hours" class="form-control" name="hours" placeholder="hr" type="number" #hours="ngModel" required>
+                      <input [(ngModel)]="activity.minutes" class="form-control" name="minutes" placeholder="min" type="number" #minutes="ngModel" required>
+                      <input [(ngModel)]="activity.seconds" class="form-control" name="seconds" placeholder="sec" type="number" #seconds="ngModel" required>
+                    </div>
+                    <div class="alert alert-danger" [hidden]="hours.valid || hours.pristine">
+                      Required Field
+                    </div>
+                    <div class="alert alert-danger" [hidden]="minutes.valid || minutes.pristine">
+                      Required Field
+                    </div>
+                    <div class="alert alert-danger" [hidden]="seconds.valid || seconds.pristine">
+                      Required Field
                     </div>
                   </div>
                 </div>
@@ -48,7 +60,7 @@
                   <label for="lbMessage">Message</label>
                   <textarea [(ngModel)]="activity.message" class="form-control" id="lbMessage" rows="3" name="message"></textarea>
                 </div>
-                <button class="btn btn-accent" (click)="add(activity)">Save</button>
+                <button class="btn btn-accent" (click)="add(activity)" [disabled]="!activityForm.form.valid">Save</button>
               </form>
             </div>
           </div>

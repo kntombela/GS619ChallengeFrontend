@@ -9,7 +9,7 @@ import { AuthService } from './auth/auth.service';
 export class AppComponent {
   title = 'Good Stories 619 Challenge';
 
-  constructor() {
+  constructor(private auth: AuthService) {
     
   }
 

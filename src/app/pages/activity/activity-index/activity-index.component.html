@@ -19,7 +19,7 @@
 <div class="row" *ngIf="utils.isLoaded(loading)">
   <div *ngFor="let activity of activityLog" (click)="setSelectedRow(activity.id)" class="col-lg-3 col-md-6 col-sm-12 mb-4">
     <div class="card card-small card-post card-post--1">
-      <div class="card-post__image" style="background-image: url('/assets/img/img_run.jpg');">
+      <div class="card-post__image" [ngClass]="{'run-activity': activityType.Run == activity.type, 'walk-activity': activityType.Walk == activity.type, 'cycle-activity': activityType.Cycle == activity.type}">
         <a href="#" data-toggle="modal" data-target="#deleteModal" class="card-post__category fas fa-times-circle"
           style="color: red; font-size:25px;"></a>
         <div class="card-post__author d-flex" [ngSwitch]="activity.type">

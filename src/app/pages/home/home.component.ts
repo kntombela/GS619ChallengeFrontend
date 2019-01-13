@@ -15,7 +15,7 @@ declare var $: any;
 })
 export class HomeComponent implements OnInit {
 
-  pageTitle = 'My Dashboard';
+  pageTitle = 'Dashboard';
   loading: boolean;
   activityLog: Activity[];
   activityType = ActivityEnum;
@@ -33,8 +33,8 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.title.setTitle(this.pageTitle);
-    this._getActivityLog(); //TODO: Update to get current logged in user
+    this.title.setTitle('GS619 Challenge X - ' + this.pageTitle);
+    this._getActivityLog();
   }
 
   delete() {
@@ -65,32 +65,27 @@ export class HomeComponent implements OnInit {
 
   private _getActivityLog() {
     this.loading = true;
-    if (this.auth.userProfile) {
-      this.activityService
-        .get(this.auth.userProfile.sub)
-        .subscribe(data => {
-          this.activityLog = data;
-          this.activityCount = data.length;
-          this.totalDistance = this._getTotalDistance(data);
-          // this.totalDuration = this._getTotalDuration(data);
-          // this._calculateDuration(data);
-          this.loading = false;
-        });
-    } else {
-      this.auth.handleAuth();
-      this.loading = false;
-    }
+    this.activityService
+      .get(this.auth.userProfile.sub)
+      .subscribe(data => {
+        this.activityLog = data;
+        this.activityCount = data.length;
+        this.totalDistance = this._getTotalDistance(data);
+        // this.totalDuration = this._getTotalDuration(data);
+        // this._calculateDuration(data);
+        this.loading = false;
+      });
   }
 
   private _getTotalDistance(data) {
-    var total = data.reduce(function(prev, cur) {
+    var total = data.reduce(function (prev, cur) {
       return prev + cur.distance;
     }, 0);
     return total;
   }
 
   private _getTotalDuration(data) {
-    var total = data.reduce(function(prev, cur) {
+    var total = data.reduce(function (prev, cur) {
       return prev + cur.duration;
     }, 0);
     return total;

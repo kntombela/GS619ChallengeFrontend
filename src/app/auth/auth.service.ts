@@ -1,3 +1,4 @@
+import { MessagesService } from './../components/messages/messages.service';
 import { Injectable } from '@angular/core';
 import * as auth0 from 'auth0-js';
 import { Router } from '@angular/router';
@@ -12,6 +13,7 @@ export class AuthService {
 
   accessToken: string;
   userProfile: any;
+  alternateUsername: string;
   userMetaData: any;
   expiresAt: number;
   // Create a stream of logged in status to communicate throughout app
@@ -27,7 +29,7 @@ export class AuthService {
     scope: AUTH_CONFIG.SCOPE
   });
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private messages: MessagesService) {
     // If app auth token is not expired, request new token
     if (JSON.parse(localStorage.getItem('expires_at')) > Date.now()) {
       this.renewToken();
@@ -51,9 +53,9 @@ export class AuthService {
       if (authResult && authResult.accessToken) {
         window.location.hash = '';
         this._getProfile(authResult);
-        this.router.navigate(['/home']);
       } else if (err) {
-        this.router.navigate(['/unauthorised']);
+        this.router.navigate(['/login']);
+        this.messages.add(`Error authenticating: ${err.error}`, false)
         console.error(`Error authenticating: ${err.error}`);
       }
     });
@@ -65,6 +67,8 @@ export class AuthService {
     this._auth0.client.userInfo(authResult.accessToken, (err, profile) => {
       if (profile) {
         this._setSession(authResult, profile);
+        this._getAlternateUsername(profile);
+        this.router.navigate(['/home']);
       } else if (err) {
         console.warn(`Error retrieving profile: ${err.error}`);
       }
@@ -75,7 +79,6 @@ export class AuthService {
     this.expiresAt = (authResult.expiresIn * 1000) + Date.now();
     // Store expiration in local storage to access in constructor
     localStorage.setItem('expires_at', JSON.stringify(this.expiresAt));
-    console.log(JSON.stringify(authResult.accessToken));
     this.accessToken = authResult.accessToken;
     // If initial login, set profile and admin information
     if (profile) {
@@ -97,8 +100,11 @@ export class AuthService {
     // End Auth0 authentication session
     this._auth0.logout({
       clientId: AUTH_CONFIG.CLIENT_ID,
-      returnTo: ENV.BASE_URI
+      returnTo: ENV.BASE_URI,
+      federated: 'logout?federated'
     });
+    // Logout of auth0 session including social providers
+    // window.location.href = 'https://digispect.auth0.com/v2/logout?federated&returnTo=http://localhost:4200';
     // Redirect to login page
     this.router.navigate(['/login']);
   }
@@ -117,5 +123,9 @@ export class AuthService {
         this._clearExpiration();
       }
     });
+  }
+
+  private _getAlternateUsername(profile) {
+    this.alternateUsername = profile[AUTH_CONFIG.PROFILE_NAMESPACE].given_name || {};
   }
 }

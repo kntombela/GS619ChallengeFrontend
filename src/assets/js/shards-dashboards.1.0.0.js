@@ -74,6 +74,10 @@ $(document).ready(function () {
   $('.toggle-sidebar').click(function (e) {
     $('.main-sidebar').toggleClass('open');
   });
+
+  $('.hide-sidebar').click(function (e) {
+    $('.main-sidebar').removeClass('open');
+  });
 });
 
 })));

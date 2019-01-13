@@ -25,7 +25,7 @@ export class ActivityNewComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.title.setTitle(this.pageTitle);
+    this.title.setTitle('GS619 Challenge X - ' + this.pageTitle);
   }
 
   add(activity: Activity) {

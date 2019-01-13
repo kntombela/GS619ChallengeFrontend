@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/cf9c2096-fcce-4bf3-bbd4-10d90ffbfcf7/resourceGroups/app/providers/Microsoft.Web/sites/GS619ChallengeFrontend",
+    "appService.deploySubpath": "dist\\GS619WebApp"
+}

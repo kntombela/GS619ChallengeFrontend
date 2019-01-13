@@ -3,3 +3,15 @@ $color_1: red;
 .card-delete-link {
   color: $color_1;
 }
+
+.run-activity {
+  background-image: url('/assets/img/img_run.jpg');
+}
+
+.walk-activity {
+  background-image: url('/assets/img/img_walk.jpg');
+}
+
+.cycle-activity {
+  background-image: url('/assets/img/img_cycle.jpg');
+}
