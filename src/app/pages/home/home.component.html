@@ -78,14 +78,14 @@
           <h6 class="m-0">Latest Activities</h6>
         </div>
         <div class="card-body p-0 pb-3 text-center">
-          <table class="table mb-0">
+          <table class="table table-hover mb-0">
             <thead class="bg-light">
               <tr>
                 <th>#</th>
                 <th>Type</th>
                 <th>Date</th>
-                <th>Distance (km/s)</th>
-                <th>Duration (hr:mm:ss)</th>
+                <th class="hide">Distance (km/s)</th>
+                <th class="hide">Duration (hr:mm:ss)</th>
                 <th></th>
               </tr>
             </thead>
@@ -93,14 +93,13 @@
               <tr *ngFor="let activity of activityLog; let i = index" (click)="setSelectedRow(activity.id)">
                 <td>{{ i + 1 }}</td>
                 <td [ngSwitch]="activity.type">
-                  <span *ngSwitchCase="activityType.Run" class="badge badge-pill badge-primary">Run</span>
-                  <span *ngSwitchCase="activityType.Walk" class="badge badge-pill badge-success">Walk</span>
-                  <span *ngSwitchCase="activityType.Cycle" class="badge badge-pill badge-secondary">Cycle</span>
+                  <a *ngSwitchCase="activityType.Run" href="javascript:void(0);" routerLink="/activity/edit/{{activity.id}}" class="badge badge-pill badge-primary">Run</a>
+                  <a *ngSwitchCase="activityType.Walk" href="javascript:void(0);" routerLink="/activity/edit/{{activity.id}}" class="badge badge-pill badge-success">Walk</a>
+                  <a *ngSwitchCase="activityType.Cycle" href="javascript:void(0);" routerLink="/activity/edit/{{activity.id}}" class="badge badge-pill badge-secondary">Cycle</a>
                 </td>
-                <td class="edit-link" routerLink="/activity/edit/{{activity.id}}">{{ activity.date |
-                  date:'mediumDate'}}</td>
-                <td>{{ activity.distance }}</td>
-                <td>{{ getDuration(activity.hours, activity.minutes, activity.seconds) }}</td>
+                <td>{{ activity.date | date:'mediumDate'}}</td>
+                <td class="hide">{{ activity.distance }}</td>
+                <td class="hide">{{ getDuration(activity.hours, activity.minutes, activity.seconds) }}</td>
                 <td class="delete-link"><i class="material-icons" data-toggle="modal" data-target="#deleteModal">clear</i></td>
               </tr>
             </tbody>

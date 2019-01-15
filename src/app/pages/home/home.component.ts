@@ -66,7 +66,7 @@ export class HomeComponent implements OnInit {
   private _getActivityLog() {
     this.loading = true;
     this.activityService
-      .get(this.auth.userProfile.sub)
+      .getTop7(this.auth.userProfile.sub)
       .subscribe(data => {
         this.activityLog = data;
         this.activityCount = data.length;

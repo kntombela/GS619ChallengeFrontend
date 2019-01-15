@@ -28,6 +28,15 @@ export class ActivityService {
       );
   }
 
+  /** GET: Get User Activities*/
+  getTop7(userId: string): Observable<Activity[]> {
+    return this.http.get<Activity[]>(this.baseUrl + '/users/' + userId + '/activities/top7')
+      .pipe(
+        retry(3),
+        catchError(this.handleError('getTop7Activities', []))
+      );
+  }
+
   /** GET: Get single activity*/
   getActivity(id: number): Observable<Activity> {
     return this.http.get<Activity>(this.accessPointUrl + '/' + id)
@@ -40,7 +49,7 @@ export class ActivityService {
   update(activity: Activity): Observable<any> {
     return this.http.put(this.accessPointUrl + '/' + activity.id, activity)
       .pipe(
-        tap(_ => this.log(`updated activity id=${activity.id}`, true)),
+        tap(_ => this.log('Activity Updated', true)),
         catchError(this.handleError<any>('updateActivity'))
       );
   }
@@ -48,7 +57,7 @@ export class ActivityService {
   /** POST: */
   add(activity: Activity): Observable<Activity> {
     return this.http.post<Activity>(this.accessPointUrl, activity).pipe(
-      tap((activity: Activity) => this.log('New activity added!', true)),
+      tap((activity: Activity) => this.log('New Activity Added', true)),
       catchError(this.handleError<Activity>('addActivity'))
     );
   }
@@ -56,7 +65,7 @@ export class ActivityService {
   /** POST: */
   delete(id: number): Observable<any> {
     return this.http.delete<number>(this.accessPointUrl + '/' + id).pipe(
-      tap(_ => this.log('Activity deleted!', true)),
+      tap(_ => this.log('Activity Deleted', true)),
       catchError(this.handleError<Activity>('deleteActivity'))
     );
   }

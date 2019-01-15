@@ -100,13 +100,12 @@ export class AuthService {
     // End Auth0 authentication session
     this._auth0.logout({
       clientId: AUTH_CONFIG.CLIENT_ID,
-      returnTo: ENV.BASE_URI,
-      federated: 'logout?federated'
+      returnTo: ENV.BASE_URI
     });
     // Logout of auth0 session including social providers
-    // window.location.href = 'https://digispect.auth0.com/v2/logout?federated&returnTo=http://localhost:4200';
+    window.location.href = 'https://digispect.auth0.com/v2/logout?federated';
     // Redirect to login page
-    this.router.navigate(['/login']);
+    // this.router.navigate(['/login']);
   }
 
   get tokenValid(): boolean {
