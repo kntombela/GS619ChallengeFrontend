@@ -12,6 +12,7 @@ import { BehaviorSubject } from 'rxjs';
 export class AuthService {
 
   accessToken: string;
+  idToken: string;
   userProfile: any;
   alternateUsername: string;
   userMetaData: any;
@@ -80,6 +81,7 @@ export class AuthService {
     // Store expiration in local storage to access in constructor
     localStorage.setItem('expires_at', JSON.stringify(this.expiresAt));
     this.accessToken = authResult.accessToken;
+    this.idToken = authResult.idToken;
     // If initial login, set profile and admin information
     if (profile) {
       this.userProfile = profile;

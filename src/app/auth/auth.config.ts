@@ -14,7 +14,7 @@ interface AuthConfig {
     CLIENT_ID: 'phiqjrgk34HsRIigxTUtyXk4SbsF2987',
     CLIENT_DOMAIN: 'digispect.auth0.com',
     RESPONSE_TYPE: 'token id_token',
-    AUDIENCE: 'https://yolesa/api',
+    AUDIENCE: 'https://digispect.auth0.com/api/v2/',
     REDIRECT: `${ENV.BASE_URI}/callback`,
     SCOPE: 'openid profile',
     PROFILE_NAMESPACE: 'http://myapp.com/profile'

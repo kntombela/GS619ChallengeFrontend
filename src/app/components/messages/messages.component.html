@@ -1,22 +1,35 @@
-<div *ngIf="messageService.messages.length">
-  <div *ngFor='let message of messageService.messages'>
-    <!-- Success -->
-    <div *ngIf="messageService.isSuccess">
-      <div class="alert alert-success alert-dismissible fade show mb-0" role="alert">
-        <button type="button" class="close" (click)="messageService.clear()" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true" class="fa fa-xs fa-times"></span>
-        </button>
-        <i class="fa fa-check mx-2"></i>{{message}}
+<div *ngIf="!messageService.profileUpdate">
+  <div *ngIf="messageService.messages.length">
+    <div *ngFor='let message of messageService.messages'>
+      <!-- Success -->
+      <div *ngIf="messageService.isSuccess">
+        <div class="alert alert-success alert-dismissible fade show mb-0" role="alert">
+          <button type="button" class="close" (click)="messageService.clear()" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true" class="fa fa-xs fa-times"></span>
+          </button>
+          <i class="fa fa-check mx-2"></i>{{message}}
+        </div>
+      </div>
+      <!-- Error -->
+      <div *ngIf="!messageService.isSuccess">
+        <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
+          <button type="button" class="close" (click)="messageService.clear()" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true" class="fa fa-xs fa-times"></span>
+          </button>
+          <i class="fa fa-times mx-2"></i>{{message}}
+        </div>
       </div>
     </div>
-    <!-- Error -->
-    <div *ngIf="!messageService.isSuccess">
-      <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
-        <button type="button" class="close" (click)="messageService.clear()" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true" class="fa fa-xs fa-times"></span>
-        </button>
-        <i class="fa fa-times mx-2"></i>{{message}}
-      </div>
-    </div>
+  </div>
+</div>
+<!-- Profile Update Reminder -->
+<div *ngIf="messageService.profileUpdate">
+  <div class="alert alert-info alert-dismissible fade show mb-0" role="alert">
+    <button type="button" class="close" (click)="messageService.clear()" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true" class="fa fa-xs fa-times"></span>
+    </button>
+    <strong>Hey {{ messageService.userName }}</strong>! Please help us do some analysis on our challenge by updating your
+    profile. Your privacy is very important to us, we will not be sharing your personal information with anyone.
+    <em><a href="https://www.freeprivacypolicy.com/privacy/view/194031022c372d8dc22441aa4b2e418f" class="alert-link ml-2">View Privacy Policy</a></em>
   </div>
 </div>

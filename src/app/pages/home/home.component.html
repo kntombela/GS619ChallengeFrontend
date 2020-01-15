@@ -9,16 +9,19 @@
 <button type="button" routerLink="/activity/new" class="mb-4 btn btn-sm btn-pill btn-outline-primary mr-2">
   <i class="material-icons mr-1">add</i>Add Activity</button>
 <!-- End Add New Activity -->
-<p *ngIf="!activityLog?.length">You have no activities yet, click 'Add Activity' to begin</p>
+<!-- Loading Div -->
+<app-loading *ngIf="loading"></app-loading>
+<!-- End Loading Div -->
+<p *ngIf="!activitySummary">You have no activities yet, click 'Add Activity' to begin</p>
 <!-- Small Stats Blocks -->
-<div class="row">
+<div *ngIf="activitySummary" class="row">
   <div class="col-lg col-md-6 col-sm-6 mb-4">
     <div class="stats-small stats-small--1 card card-small">
       <div class="card-body p-0 d-flex">
         <div class="d-flex flex-column m-auto">
           <div class="stats-small__data text-center">
             <span class="stats-small__label text-uppercase"># Activities</span>
-            <h6 class="stats-small__value count my-3">{{ activityCount }}</h6>
+            <h6 class="stats-small__value count my-3">{{ activitySummary }}</h6>
           </div>
         </div>
         <canvas height="120" class="blog-overview-stats-small-1"></canvas>
@@ -66,11 +69,8 @@
   </div>
 </div>
 <!-- End Small Stats Blocks -->
-<!-- Loading Div -->
-<app-loading *ngIf="loading"></app-loading>
-<!-- End Loading Div -->
 <!-- Activities Table-->
-<div *ngIf="activityLog?.length">
+<div *ngIf="activitySummary">
   <div class="row" *ngIf="utils.isLoaded(loading)">
     <div class="col">
       <div class="card card-small mb-4">
@@ -90,7 +90,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let activity of activityLog; let i = index" (click)="setSelectedRow(activity.id)">
+              <tr *ngFor="let activity of top7Activities; let i = index" (click)="setSelectedRow(activity.id)">
                 <td>{{ i + 1 }}</td>
                 <td [ngSwitch]="activity.type">
                   <a *ngSwitchCase="activityType.Run" href="javascript:void(0);" routerLink="/activity/edit/{{activity.id}}" class="badge badge-pill badge-primary">Run</a>
@@ -110,6 +110,9 @@
   </div>
 </div>
 <!-- End Activities Table -->
+<div *ngIf="activitySummary" class="col text-center">
+  <button type="button" routerLink="/activity" class="btn btn-link p-0 mb-2">View More &rarr;</button>
+</div>
 <!-- Delete Modal -->
 <div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">

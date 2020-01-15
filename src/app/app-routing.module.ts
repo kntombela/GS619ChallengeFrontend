@@ -1,3 +1,4 @@
+import { ProfileComponent } from './pages/profile/profile.component';
 import { UnauthorisedComponent } from './pages/unauthorised/unauthorised.component';
 import { CallbackComponent } from './pages/callback/callback.component';
 import { NgModule } from '@angular/core';
@@ -13,6 +14,7 @@ const routes: Routes = [
   // { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: '', redirectTo: 'home', pathMatch: 'prefix', canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
+  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'callback', component: CallbackComponent },
   { path: 'activity', component: ActivityIndexComponent, canActivate: [AuthGuard] },

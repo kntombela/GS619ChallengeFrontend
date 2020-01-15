@@ -4,8 +4,8 @@ const getHost = () => {
     const host = window.location.host;
     return `${protocol}//${host}`;
 };
-// const apiURI = _isDev ? 'https://localhost:44331/api/' : `/api/`;
-const apiURI = 'https://gs619webapp20190112090722.azurewebsites.net/api/';
+// const apiURI = _isDev ? 'https://localhost:44331//api/' : `/api/`;
+const apiURI = 'https://gs619webapp20200115013316.azurewebsites.net/api/';
 const mgmtApiURI = 'https://digispect.auth0.com/api/v2/';
 
 export const ENV = {

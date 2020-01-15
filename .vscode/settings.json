@@ -1,4 +1,8 @@
 {
-    "appService.defaultWebAppToDeploy": "/subscriptions/cf9c2096-fcce-4bf3-bbd4-10d90ffbfcf7/resourceGroups/app/providers/Microsoft.Web/sites/GS619ChallengeFrontend",
-    "appService.deploySubpath": "dist\\GS619WebApp"
+    "appService.deploySubpath": "",
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/7cb57698-6f56-4fb1-ab1d-d9699ddb6de5/resourceGroups/app/providers/Microsoft.Web/sites/619Challenge"
 }

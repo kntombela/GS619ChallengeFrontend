@@ -1,3 +1,4 @@
+import { MessagesService } from './components/messages/messages.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { ActivityService } from './pages/activity/activity.service';
 import { BrowserModule, Title } from '@angular/platform-browser';
@@ -21,6 +22,8 @@ import { AuthGuard } from './guard/auth.guard';
 import { LoadingComponent } from './core/loading.component';
 import { UtilsService } from './core/utils.service';
 import { UnauthorisedComponent } from './pages/unauthorised/unauthorised.component';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { AgmCoreModule } from '@agm/core';
 
 @NgModule({
   declarations: [
@@ -36,9 +39,14 @@ import { UnauthorisedComponent } from './pages/unauthorised/unauthorised.compone
     CallbackComponent,
     LoginComponent,
     LoadingComponent,
-    UnauthorisedComponent
+    UnauthorisedComponent,
+    ProfileComponent
   ],
   imports: [
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyDhKbpd0PviWw_k15kxOPSjXE_DF9bAQ9U',
+      libraries: ["places"]
+    }),
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
@@ -46,6 +54,7 @@ import { UnauthorisedComponent } from './pages/unauthorised/unauthorised.compone
   ],
   providers: [
     ActivityService,
+    MessagesService,
     UtilsService,
     AuthService,
     AuthGuard,
